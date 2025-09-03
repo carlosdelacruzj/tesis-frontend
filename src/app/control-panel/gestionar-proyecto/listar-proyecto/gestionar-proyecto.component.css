@@ -1,0 +1,6 @@
+.table td,
+.table th {
+    padding: 8px;
+    border-bottom-width: 0.5px;
+    border-bottom-style: solid;
+}

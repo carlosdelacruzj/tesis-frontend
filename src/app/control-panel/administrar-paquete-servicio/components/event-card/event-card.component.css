@@ -1,0 +1,13 @@
+.example-card img {
+    padding: auto;
+    display: block;
+    margin: auto;
+    width: 100px;
+    height: 100px;
+}
+
+.example-card button {
+    margin: auto;
+    display: block;
+    padding-top: 20px;
+}

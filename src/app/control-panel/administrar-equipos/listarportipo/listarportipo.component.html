@@ -1,0 +1,262 @@
+<div class="container-fluid dashboard-content">
+  <h3>
+    Equipos del Modelo:
+    {{ Modelo }}
+  </h3>
+  <div class="dashboard-ecommerce">
+    <div class="row">
+      <!-- Buscador general -->
+      <div class="col-9">
+        <mat-form-field appearance="fill">
+          <input
+            matInput
+            placeholder="Buscar"
+            autocomplete="off"
+            (keyup)="filterData($event)"
+          />
+        </mat-form-field>
+      </div>
+      <!-- Boton para el registro de equipo -->
+      <div class="col-3">
+        <button class="btn btn-primary btn-lg" (click)="open(contentCreate)">
+          Registrar Equipo
+        </button>
+      </div>
+      <!-- Leyenda -->
+      <table
+        mat-table
+        [dataSource]="dataSource2"
+        class="table"
+        style="width: 50%"
+      >
+        <ng-container matColumnDef="disponible">
+          <th mat-header-cell *matHeaderCellDef class="text-center">
+            Disponibles
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            class="text-center text-capitalize"
+          >
+            {{ element.Disponible }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="enUso">
+          <th mat-header-cell *matHeaderCellDef class="text-center">En Uso</th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            class="text-center text-capitalize"
+          >
+            {{ element.EnUso }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="mantenimiento">
+          <th mat-header-cell *matHeaderCellDef class="text-center">
+            Mantenimiento
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            class="text-center text-capitalize"
+          >
+            {{ element.Mantenimiento }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="noDisponible">
+          <th mat-header-cell *matHeaderCellDef class="text-center">
+            No Disponibles
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            class="text-center text-capitalize"
+          >
+            {{ element.NoDisponible }}
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columnsToDisplay2"></tr>
+        <tr mat-row *matRowDef="let row; columns: columnsToDisplay2"></tr>
+      </table>
+    </div>
+    <div class="container-fluid">
+      <!-- TABLA -->
+      <table mat-table [dataSource]="dataSource1" class="table">
+        <!-- Tipo de Equipo -->
+        <ng-container matColumnDef="equipo">
+          <th mat-header-cell *matHeaderCellDef class="text-center">Equipo</th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            class="text-center text-capitalize"
+          >
+            {{ element.Equipo }}
+          </td>
+        </ng-container>
+        <!-- Marca de Equipo -->
+        <ng-container matColumnDef="marca">
+          <th mat-header-cell *matHeaderCellDef class="text-center">Marca</th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            class="text-center text-capitalize"
+          >
+            {{ element.Marca }}
+          </td>
+        </ng-container>
+        <!-- Modelo de Equipo -->
+        <ng-container matColumnDef="modelo">
+          <th mat-header-cell *matHeaderCellDef class="text-center">Modelo</th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            class="text-center text-capitalize"
+          >
+            {{ element.Modelo }}
+          </td>
+        </ng-container>
+        <!-- Serie de Equipo -->
+        <ng-container matColumnDef="serie">
+          <th mat-header-cell *matHeaderCellDef class="text-center">
+            N° Serie
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            class="text-center text-capitalize"
+          >
+            {{ element.Serie }}
+          </td>
+        </ng-container>
+        <!-- Fecha de Equipo -->
+        <ng-container matColumnDef="fecha">
+          <th mat-header-cell *matHeaderCellDef class="text-center">Fecha</th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            class="text-center text-capitalize"
+          >
+            {{ element.Fecha }}
+          </td>
+        </ng-container>
+        <!-- Estado de Equipo -->
+        <ng-container matColumnDef="estado">
+          <th mat-header-cell *matHeaderCellDef class="text-center">Estado</th>
+          <td
+            mat-cell
+            *matCellDef="let element"
+            class="text-center text-capitalize"
+          >
+            {{ element.Estado }}
+          </td>
+        </ng-container>
+        <!-- Accion de Estados  -->
+        <ng-container matColumnDef="estados">
+          <th mat-header-cell *matHeaderCellDef class="text-center">
+            Actualizar Estado
+          </th>
+          <td mat-cell *matCellDef="let element" class="text-center">
+            <button
+              class="mat-raised-button"
+              (click)="putStatus(element.Serie)"
+              [disabled]="isDisable(element.Estado) ? 'true' : null"
+              [ngClass]="{
+                primary: element.Estado === 'Disponible',
+                warn: element.Estado === 'Mantenimiento'
+              }"
+            >
+              {{ element.Estado }}
+            </button>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+        <tr mat-row *matRowDef="let row; columns: columnsToDisplay"></tr>
+      </table>
+      <mat-paginator
+        #paginator
+        [pageSize]="5"
+        [pageSizeOptions]="[5, 10, 25, 100]"
+      >
+      </mat-paginator>
+    </div>
+  </div>
+</div>
+
+<ng-template #contentCreate let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h3 class="modal-title mm" id="modal-basic-title">
+      Registrar Equipo del Modelo {{ Modelo }}
+    </h3>
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="d('Cross click')"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form #EquipoCreateForm="ngForm">
+      <mat-card class="card">
+        <mat-card-header>
+          <mat-card-title><h4>Registro</h4></mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="card-body" style="padding-top: 10px">
+          <div class="form-group">
+            <label class="col-form-label1">N° Serie</label>
+            <input
+              type="text"
+              class="form-control form-control-sm"
+              name="idEquipo"
+              #idEquipo="ngModel"
+              [(ngModel)]="service.registerEquipo.idEquipo"
+              [pattern]="seriePattern"
+              required
+            />
+            <div *ngIf="idEquipo.errors?.pattern">
+              <p>*Sólo se acepta el formato: AAA-000</p>
+            </div>
+            <div *ngIf="idEquipo.errors?.required">
+              <p>*Campo Requerido</p>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-form-label1">Fecha</label>
+            <input
+              type="text"
+              class="form-control form-control-sm"
+              name="fecha"
+              #fecha="ngModel"
+              [(ngModel)]="service.registerEquipo.fecha"
+              readonly
+            />
+          </div>
+          <div class="form-group" style="display: none">
+            <label class="col-form-label1">Modelo</label>
+            <input
+              type="text"
+              class="form-control form-control-sm"
+              name="modelo"
+              #modelo="ngModel"
+              [(ngModel)]="service.registerEquipo.modelo"
+            />
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-outline-dark"
+      (click)="addEquipo(EquipoCreateForm)"
+    >
+      Registrar
+    </button>
+  </div>
+</ng-template>

@@ -1,0 +1,34 @@
+<div class="dashboard-ecommerce">
+    <div class="container-fluid dashboard-content ">
+        <div class="ecommerce-widget">
+
+            <table mat-table [dataSource]="proyectos" class="mat-elevation-z8">
+
+                <!--- Nota: cambio de prueba en rama ricardo a -->
+
+                <!-- Position Column -->
+                <ng-container matColumnDef="ID">
+                    <th mat-header-cell *matHeaderCellDef> ID </th>
+                    <td mat-cell *matCellDef="let element"> {{element.PK_Pro_Cod}} </td>
+                </ng-container>
+
+                <!-- Name Column -->
+                <ng-container matColumnDef="nombre">
+                    <th mat-header-cell *matHeaderCellDef> nombre </th>
+                    <td mat-cell *matCellDef="let element"> {{element.Pro_Nombre}} </td>
+                </ng-container>
+
+                <!-- Weight Column -->
+                <ng-container matColumnDef="fecha">
+                    <th mat-header-cell *matHeaderCellDef> fecha </th>
+                    <td mat-cell *matCellDef="let element"> {{element.EPro_Fecha_Inicio_Edicion}} </td>
+                </ng-container>
+
+
+                <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+                <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
+            </table>
+
+        </div>
+    </div>
+</div>

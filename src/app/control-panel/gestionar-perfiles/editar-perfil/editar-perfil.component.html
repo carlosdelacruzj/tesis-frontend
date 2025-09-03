@@ -1,0 +1,117 @@
+<div class="container-fluid dashboard-content ">
+    <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+            <div class="page-header">
+                <h2 class="pageheader-title">Form Validations </h2>
+                <p class="pageheader-text">Proin placerat ante duiullam scelerisque a velit ac porta, fusce sit amet vestibulum mi. Morbi lobortis pulvinar quam.</p>
+                <div class="page-breadcrumb">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="#" class="breadcrumb-link">Forms</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Form Validations</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form #perfilForm="ngForm" (ngSubmit)="putPermiso(perfilForm)">
+        <!-- card numero 1 -->
+        <mat-card class="card">
+            <mat-card-header class="card-header">
+                <mat-card-title>Registrar Perfil</mat-card-title>
+            </mat-card-header>
+            <mat-card-content class="card-body">
+                <div class="form-row">
+                    <mat-form-field class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 mb-2 input-disabled" appearance="fill">
+                        <mat-label>ID</mat-label>
+                        <input matInput type="text" name="ID" #ID="ngModel" [(ngModel)]="service.selectPerfil.ID" [readonly]="true">
+                    </mat-form-field>
+                    <mat-form-field class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 mb-2 " appearance="fill">
+                        <mat-label>Rol</mat-label>
+                        <mat-select name="ROL" #ROL="ngModel" [(ngModel)]="service.selectPerfil.ROL" required>
+                            <mat-option label=""></mat-option>
+                            <mat-option *ngFor="let rol of roles" [value]="rol.PK_Rol_Cod">
+                                {{rol.Rol_Nombre}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="selectFormControl.hasError('required')">
+                            <p>*Campo Requerido</p>
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 mb-2 " appearance="fill">
+                        <mat-label>Nombre</mat-label>
+                        <input matInput type="text" name="nombre" #nombre="ngModel" [(ngModel)]="service.selectPerfil.nombre" [pattern]="nombrePattern" required>
+                        <mat-error *ngIf="nombre.errors?.pattern">
+                            <p>*Sólo letras</p>
+                        </mat-error>
+                        <mat-error *ngIf="nombre.errors?.required">
+                            <p>*Campo Requerido</p>
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 mb-2 " appearance="fill">
+                        <mat-label>Apellido</mat-label>
+                        <input matInput type="text" name="apellido" #apellido="ngModel" [(ngModel)]="service.selectPerfil.apellido" [readonly]="true" [pattern]="apellidoPattern" required>
+                        <mat-error *ngIf="apellido.errors?.pattern">
+                            <p>*Sólo letras</p>
+                        </mat-error>
+                        <mat-error *ngIf="apellido.errors?.required">
+                            <p>*Campo Requerido</p>
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill" class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 mb-2">
+                        <mat-label>Correo</mat-label>
+                        <input matInput type="text" name="correo" #correo="ngModel" [(ngModel)]="service.selectPerfil.correo" [pattern]="correoPattern" required>
+                        <mat-error *ngIf="correo.errors?.pattern">
+                            <p>*Ingrese un email correcto</p>
+                        </mat-error>
+                        <mat-error *ngIf="correo.errors?.required">
+                            <p>*Campo Requerido</p>
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 mb-2 " appearance="fill">
+                        <mat-label>Número de documento</mat-label>
+                        <input matInput type="text" name="doc" #doc="ngModel" [(ngModel)]="service.selectPerfil.doc" [pattern]="docPattern" [readonly]="true" required>
+                        <mat-error *ngIf="doc.errors?.pattern">
+                            <p>*Sólo números</p>
+                        </mat-error>
+                        <mat-error *ngIf="doc.errors?.required">
+                            <p>*Campo Requerido</p>
+                        </mat-error>
+                    </mat-form-field>
+                    <mat-form-field class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 mb-2 " appearance="fill">
+                        <mat-label>Celular</mat-label>
+                        <input matInput type="text" name="celular" #celular="ngModel" [(ngModel)]="service.selectPerfil.celular" [pattern]="celularPattern" required>
+                        <mat-error *ngIf="celular.errors?.pattern">
+                            <p>*Sólo números</p>
+                        </mat-error>
+                        <mat-error *ngIf="celular.errors?.required">
+                            <p>*Campo Requerido</p>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+                <div class="form-row">
+                    <mat-form-field class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mb-12 " appearance="fill">
+                        <mat-label>Dirección</mat-label>
+                        <textarea matInput type="text" name="direccion" #direccion="ngModel" [(ngModel)]="service.selectPerfil.direccion" required></textarea>
+                        <mat-error *ngIf="direccion.errors?.pattern">
+                            <p>*Ingrese una dirección correcta</p>
+                        </mat-error>
+                        <mat-error *ngIf="direccion.errors?.required">
+                            <p>*Campo Requerido</p>
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </mat-card-content>
+        </mat-card>
+        <button class="btn btn-primary mb-2 mr-1" type="submit" [disabled]="perfilForm.invalid">
+            Actualizar
+        </button>
+        <button class="btn btn-primary mb-2 mr-1" type="button" [routerLink]="['/home/gestionar-cliente']"> 
+            atras
+        </button>
+    </form>
+</div>

@@ -1,0 +1,277 @@
+<div class="container-fluid dashboard-content">
+    <!-- Titulo -->
+    <h1>Administrar Equipos</h1>
+    <!-- Grupos -->
+    <mat-tab-group>
+        <mat-tab label="Equipos Adquiridos">
+            <div class="dashboard-ecommerce" *ngIf="esPrincipal">
+                <!-- Buscador general -->
+                <div class="col-8">
+                    <mat-form-field appearance="fill">
+                        <input matInput placeholder="Buscar" autocomplete="off" (keyup)="filterData($event)" />
+                    </mat-form-field>
+                </div>
+                <div class="container-fluid">
+                    <!-- TABLA -->
+                    <table mat-table [dataSource]="dataSource" class="table">
+                        <!-- Tipo de Equipo -->
+                        <ng-container matColumnDef="equipo">
+                            <th mat-header-cell *matHeaderCellDef class="text-center">
+                                Equipo
+                            </th>
+                            <td mat-cell *matCellDef="let element" class="text-center text-capitalize">
+                                {{ element.Equipo }}
+                            </td>
+                        </ng-container>
+                        <!-- Marca de Equipo -->
+                        <ng-container matColumnDef="marca">
+                            <th mat-header-cell *matHeaderCellDef class="text-center">
+                                Marca a
+                            </th>
+                            <td mat-cell *matCellDef="let element" class="text-center text-capitalize">
+                                {{ element.Marca }}
+                            </td>
+                        </ng-container>
+                        <!-- Modelo de Equipo -->
+                        <ng-container matColumnDef="modelo">
+                            <th mat-header-cell *matHeaderCellDef class="text-center">
+                                Modelo
+                            </th>
+                            <td mat-cell *matCellDef="let element" class="text-center text-capitalize">
+                                {{ element.Modelo }}
+                            </td>
+                        </ng-container>
+                        <!-- Cantidad de los equipos por el modelo de Equipo -->
+                        <ng-container matColumnDef="cEquipo">
+                            <th mat-header-cell *matHeaderCellDef class="text-center">
+                                Cantidad
+                            </th>
+                            <td mat-cell *matCellDef="let element" class="text-center text-capitalize">
+                                {{ element.Cantidad }}
+                            </td>
+                        </ng-container>
+                        <!-- Accion de Ver  -->
+                        <ng-container matColumnDef="ver">
+                            <th mat-header-cell *matHeaderCellDef class="text-center">Ver</th>
+                            <td mat-cell *matCellDef="let element" class="text-center">
+                                <button mat-mini-fab color="primary" (click)="
+                  verDetalle(
+                    element.IdEquipo,
+                    element.IdMarca,
+                    element.IdModelo,
+                    element.Modelo
+                  )
+                " style="background-color: transparent; color: #101c30" aria-label="Btn Ver">
+                <mat-icon>menu</mat-icon>
+              </button>
+                            </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+                        <tr mat-row *matRowDef="let row; columns: columnsToDisplay"></tr>
+                    </table>
+                    <mat-paginator #paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]">
+                    </mat-paginator>
+                </div>
+            </div>
+            <div *ngIf="!esPrincipal">
+                <!-- Boton para el registro de equipo -->
+                <div>
+                    <div style="position: absolute">
+                        <button class="btn btn-primary btn-lg" (click)="esPrincipal = true; getEquipos()">
+            <mat-icon>reply_all</mat-icon>
+          </button>
+                    </div>
+                </div>
+                <app-listarportipo [idEquipo]="idEquipo" [idMarca]="idMarca" [idModelo]="idModelo" [Modelo]="Modelo">
+                </app-listarportipo>
+            </div>
+        </mat-tab>
+        <mat-tab label="Equipos Alquilados">
+            <div class="dashboard-ecommerce" *ngIf="isPrincipal">
+                <!-- Buscador -->
+                <div class="col-9">
+                    <mat-form-field appearance="fill">
+                        <input matInput placeholder="Buscar" autocomplete="off" (keyup)="filterData2($event)" />
+                    </mat-form-field>
+                </div>
+                <!-- Boton -->
+                <div class="col-3" style="float: right">
+                    <button class="btn btn-primary btn-lg" (click)="registrarAlquilado(contentCreate)">
+          Registrar Equipo
+        </button>
+                </div>
+
+                <div class="container-fluid">
+                    <!-- TABLA -->
+                    <table mat-table [dataSource]="dataSourceA" class="table">
+                        <!-- Tipo de Equipo -->
+                        <ng-container matColumnDef="equipo">
+                            <th mat-header-cell *matHeaderCellDef class="text-center">
+                                Equipo
+                            </th>
+                            <td mat-cell *matCellDef="let element" class="text-center text-capitalize">
+                                {{ element.tipoEquipo }}
+                            </td>
+                        </ng-container>
+                        <!-- Serie del Equipo -->
+                        <ng-container matColumnDef="serie">
+                            <th mat-header-cell *matHeaderCellDef class="text-center">
+                                N° Serie
+                            </th>
+                            <td mat-cell *matCellDef="let element" class="text-center text-capitalize">
+                                {{ element.serie }}
+                            </td>
+                        </ng-container>
+                        <!-- Proyecto Asignado del Equipo -->
+                        <ng-container matColumnDef="proyectoAsig">
+                            <th mat-header-cell *matHeaderCellDef class="text-center">
+                                Proyecto Asignado
+                            </th>
+                            <td mat-cell *matCellDef="let element" class="text-center text-capitalize">
+                                {{ element.proyectoAsig }}
+                            </td>
+                        </ng-container>
+                        <!-- Empleado Asignado del Equipo -->
+                        <ng-container matColumnDef="empleadoAsig">
+                            <th mat-header-cell *matHeaderCellDef class="text-center">
+                                Empleado Asignado
+                            </th>
+                            <td mat-cell *matCellDef="let element" class="text-center text-capitalize">
+                                {{ element.empleadoAsig }}
+                            </td>
+                        </ng-container>
+                        <!-- Estado del Equipo -->
+                        <ng-container matColumnDef="estado">
+                            <th mat-header-cell *matHeaderCellDef class="text-center">
+                                Estado
+                            </th>
+                            <td mat-cell *matCellDef="let element" class="text-center text-capitalize">
+                                {{ element.estado }}
+                            </td>
+                        </ng-container>
+                        <!-- Boton Detalles  -->
+                        <ng-container matColumnDef="detalle">
+                            <th mat-header-cell *matHeaderCellDef class="text-center">
+                                Detalle
+                            </th>
+                            <td mat-cell *matCellDef="let element" class="text-center">
+                                <button mat-mini-fab color="primary" (click)="verDetalleAlquilado(element.id, element.serie)" style="background-color: transparent; color: #101c30" aria-label="Btn Ver">
+                <mat-icon>menu</mat-icon>
+              </button>
+                            </td>
+                        </ng-container>
+                        <tr mat-header-row *matHeaderRowDef="columnsToDisplayA"></tr>
+                        <tr mat-row *matRowDef="let row; columns: columnsToDisplayA"></tr>
+                    </table>
+                    <mat-paginator #paginatorA [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]">
+                    </mat-paginator>
+                </div>
+            </div>
+            <div *ngIf="!isPrincipal">
+                <!-- Boton para el registro de equipo -->
+                <div>
+                    <div style="position: absolute">
+                        <button class="btn btn-primary btn-lg" (click)="isPrincipal = true; getEquiposAlquilados()">
+            <mat-icon>reply_all</mat-icon>
+          </button>
+                    </div>
+                </div>
+                <app-detalles-alquilado [id]="id" [serie]="serie">
+                </app-detalles-alquilado>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>
+
+<ng-template #contentCreate let-c="close" let-d="dismiss">
+    <div class="modal-header">
+        <h3 class="modal-title mm" id="modal-basic-title">
+            Registrar Equipo Alquilado
+        </h3>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+    </div>
+    <div class="modal-body">
+        <form #EquipoCreateForm="ngForm">
+            <mat-card class="card">
+                <mat-card-content class="card-body" style="padding-top: 10px">
+                    <div class="form-group">
+                        <label class="col-form-label1">Tipo de Equipo</label>
+                        <input type="text" class="form-control form-control-sm" name="tipoEquipo" #tipoEquipo="ngModel" [(ngModel)]="service.postAlquilado.tipoEquipo" />
+                        <div *ngIf="tipoEquipo.errors?.required">
+                            <p>*Campo Requerido</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label1">Marca</label>
+                        <input type="text" class="form-control form-control-sm" name="marca" #marca="ngModel" [(ngModel)]="service.postAlquilado.marca" />
+                        <div *ngIf="marca.errors?.required">
+                            <p>*Campo Requerido</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label1">Modelo</label>
+                        <input type="text" class="form-control form-control-sm" name="modelo" #modelo="ngModel" [(ngModel)]="service.postAlquilado.modelo" />
+                        <div *ngIf="modelo.errors?.required">
+                            <p>*Campo Requerido</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label1">N° Serie</label>
+                        <input type="text" class="form-control form-control-sm" name="serie" #serie="ngModel" [(ngModel)]="service.postAlquilado.serie" [pattern]="seriePattern" required />
+                        <div *ngIf="serie.errors?.pattern">
+                            <p>*Sólo se acepta el formato: AAA-000</p>
+                        </div>
+                        <div *ngIf="serie.errors?.required">
+                            <p>*Campo Requerido</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label1">Fecha Entrada</label>
+                        <input type="text" class="form-control form-control-sm" name="fechaEntrada" #fechaEntrada="ngModel" [(ngModel)]="service.postAlquilado.fechaEntrada" readonly />
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label1">Fecha Salida</label>
+                        <input type="date" class="form-control form-control-sm" name="fechaSalida" #fechaSalida="ngModel" [(ngModel)]="service.postAlquilado.fechaSalida" />
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label1">Proyecto</label><br />
+                        <select mat-select name="fk_Pro_Cod" #fk_Pro_Cod="ngModel" [(ngModel)]="service.postAlquilado.fk_Pro_Cod">
+            <option
+              matInput
+              *ngFor="let Proyecto of proyecto"
+              [value]="Proyecto.ID"
+            >
+              {{ Proyecto.Nombre }}
+            </option>
+          </select>
+                        <input type="text" class="form-control form-control-sm" name="fk_Pro_Cod" #fk_Pro_Cod="ngModel" [(ngModel)]="service.postAlquilado.fk_Pro_Cod" style="display: none" />
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label1">Miembro del Staff</label><br />
+                        <select mat-select name="fk_Empleado_Cod" #fk_Empleado_Cod="ngModel" [(ngModel)]="service.postAlquilado.fk_Empleado_Cod">
+            <option
+              matInput
+              *ngFor="let Empleado of empleado"
+              [value]="Empleado.ID"
+            >
+              {{ Empleado.Nombre }} - {{ Empleado.Estado }}
+            </option>
+          </select>
+                        <input type="text" class="form-control form-control-sm" name="fk_Empleado_Cod" #fk_Empleado_Cod="ngModel" [(ngModel)]="service.postAlquilado.fk_Empleado_Cod" style="display: none" />
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label1">Estado</label>
+                        <input type="text" class="form-control form-control-sm" name="estado" value="ALQUILADO" #estado="ngModel" [(ngModel)]="service.postAlquilado.estado" readonly />
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="addAlquilado(EquipoCreateForm)">
+    Registrar
+  </button>
+    </div>
+</ng-template>

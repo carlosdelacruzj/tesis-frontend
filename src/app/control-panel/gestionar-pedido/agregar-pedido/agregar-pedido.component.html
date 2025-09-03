@@ -1,0 +1,189 @@
+<div class="dashboard-ecommerce">
+    <div class="container-fluid dashboard-content ">
+        <h1>Registrar pedido</h1>
+
+        <form #EmpleadoForm="ngForm">
+            <div class="row">
+                <div class="col">
+                    <mat-card class="card">
+                        <mat-card-header>
+                            <mat-card-title>Datos del pedido</mat-card-title>
+                        </mat-card-header>
+                        <mat-card-content class="card-body">
+                            <div class="form-group">
+                                <label class='col-form-label'>Pedido</label>
+                                <input type="text" class="form-control" name="NombrePedido" [(ngModel)]="visualizarService.selectAgregarPedido.NombrePedido" required>
+                            </div>
+                            <div class="form-group">
+                                <label class='col-form-label'>Empleado</label>
+                                <input type="text" name="CodigoEmpleado" [(ngModel)]="CodigoEmpleado" class="form-control" disabled>
+                            </div>
+
+                            <div class="form-group">
+                                <label class='col-form-label'>Fecha de registro</label>
+                                <input type="text" class="form-control" name="fechaCreate" [(ngModel)]="visualizarService.selectAgregarPedido.fechaCreate" disabled>
+                            </div>
+                        </mat-card-content>
+                    </mat-card>
+                </div>
+                <div class="col ms-auto">
+                    <mat-card class="card">
+                        <mat-card-header>
+                            <mat-card-title>Datos del cliente</mat-card-title>
+                        </mat-card-header>
+                        <mat-card-content class="card-body">
+                            <div class="form-group">
+                                <label class='col-form-label'>Documento de identidad</label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="dni" [(ngModel)]="dniCliente">
+                                    <div class="input-group-append">
+                                        <button (click)="buscarCliente(dniCliente)" type="button" class="btn btn-danger">Buscar</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class='col-form-label'>Nombres</label>
+                                <input type="text" class="form-control" name="nombre" [(ngModel)]="infoCliente.Nombre" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label class='col-form-label'>Apellidos</label>
+                                <input type="text" class="form-control" name="Apellido" [(ngModel)]="infoCliente.Apellido" disabled>
+                            </div>
+                        </mat-card-content>
+                    </mat-card>
+                </div>
+            </div>
+            <mat-card class="card">
+                <mat-card-header>
+                    <mat-card-title>Datos del evento</mat-card-title>
+                </mat-card-header>
+                <mat-card-content class="card-body">
+                    <div class="row">
+                        <div class="col ms-auto">
+                            <div class="form-group">
+                                <label class='col-form-label'>Hora</label>
+                                <input type="time" class="form-control" name="horaEvent" [(ngModel)]="visualizarService.selectAgregarPedido.horaEvent" required>
+                            </div>
+                        </div>
+                        <div class="col ms-auto">
+                            <div class="form-group">
+                                <label class='col-form-label'>Fecha</label>
+                                <input type="date" class="form-control" min="{{minimo}}" max="{{maximo}}" name="fechaEvent" [(ngModel)]="visualizarService.selectAgregarPedido.fechaEvent" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col ms-auto">
+                            <div class="form-group">
+                                <label class='col-form-label'>Ubicacion</label>
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" name="Direc" [(ngModel)]="Direccion" autocomplete="off">
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btn-danger" (click)="addListUbicacion(Direccion,visualizarService.selectAgregarPedido.fechaEvent,visualizarService.selectAgregarPedido.horaEvent)">+</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <table mat-table [dataSource]="dataSource" matSort class="table">
+
+                            <ng-container matColumnDef="Fecha">
+                              <th mat-header-cell mat-sort-header *matHeaderCellDef> Fecha </th>
+                              <td mat-cell *matCellDef="let element"> {{element.Fecha}} </td>
+                            </ng-container>
+                            <ng-container matColumnDef="Hora">
+                                <th mat-header-cell mat-sort-header *matHeaderCellDef> Hora </th>
+                                <td mat-cell *matCellDef="let element"> {{element.Hora}} </td>
+                              </ng-container>
+
+                            <ng-container matColumnDef="Direccion">
+                                <th mat-header-cell *matHeaderCellDef> Direccion </th>
+                                <td mat-cell *matCellDef="let element"> {{element.Direccion}} </td>
+                            </ng-container>
+
+                            <!-- <ng-container matColumnDef="Coordenadas">
+                              <th mat-header-cell mat-sort-header *matHeaderCellDef> Coordenadas </th>
+                              <td mat-cell *matCellDef="let element"> {{element.Coordenadas}} </td>
+                            </ng-container> -->
+                            <!-- Boton Visualizar -->
+                            <ng-container matColumnDef="Quitar">
+                                <th mat-header-cell *matHeaderCellDef> Quitar </th>
+                                <td mat-cell *matCellDef="let element"> <button class="btn mx-auto" style="background-color:transparent" (click)="deleteElement(element.Direccion,element.Hora)"><i class="fa fa-trash fa-2x"></i></button> </td>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+                            <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
+                        </table>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+            <mat-card class="card">
+                <mat-card-header>
+                    <mat-card-title>Datos del evento</mat-card-title>
+                </mat-card-header>
+                <mat-card-content class="card-body">
+                    <div class="row">
+                        <div class="col ms-auto">
+                            <div class="form-group">
+                                <label class='col-form-label'>Servicio</label>
+                                <select type="text" class="form-control form-control-sm" name="servicio" [(ngModel)]="servicioSeleccionado" (ngModelChange)="asignarServicio($event)" requiered>
+                                    <option *ngFor="let s of servicios" [value]="s.ID">{{s.Nombre}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col ms-auto">
+                            <div class="form-group">
+                                <label class='col-form-label'>Evento</label>
+                                <select type="text" class="form-control form-control-sm" name="evento" [(ngModel)]="eventoSeleccionado" (ngModelChange)="asignarEvento($event)" requiered>
+                                    <option *ngFor="let e of evento" [value]="e.PK_E_Cod">{{e.E_Nombre}}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <table mat-table [dataSource]="dataSource1" matSort class="table">
+
+                            <ng-container matColumnDef="Descripcion">
+                                <th mat-header-cell mat-sort-header *matHeaderCellDef> Descripcion </th>
+                                <td mat-cell *matCellDef="let element"> {{element.Descripcion}} </td>
+                            </ng-container>
+
+                            <ng-container matColumnDef="Precio">
+                                <th mat-header-cell mat-sort-header *matHeaderCellDef> Precio </th>
+                                <td mat-cell *matCellDef="let element"> {{element.Precio}} </td>
+                            </ng-container>
+
+                            <!-- Boton Visualizar -->
+                            <ng-container matColumnDef="Seleccionar">
+                                <th mat-header-cell *matHeaderCellDef> Seleccionar </th>
+                                <td mat-cell *matCellDef="let element">
+                                    <mat-radio-group name="Descripcion" [(ngModel)]="selectedDescripcion" (ngModelChange)="radioSelected()">
+                                        <mat-radio-button value={{element.ID}}></mat-radio-button>
+                                    </mat-radio-group>
+                            </ng-container>
+
+                            <tr mat-header-row *matHeaderRowDef="columnsToDisplay1"></tr>
+                            <tr mat-row *matRowDef="let row; columns: columnsToDisplay1;"></tr>
+                        </table>
+                    </div>
+                    <div class="form-group">
+                        <label class='col-form-label'>Observaciones</label>
+                        <textarea type="text" class="form-control" name="Observacion" rows="5" [(ngModel)]="visualizarService.selectAgregarPedido.Observacion">    
+                            </textarea>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+            <div class="row" style="text-align: center;">
+                <div class="col-6" style="text-align: right;">
+                    <button type="button" class="btn btn-outline-dark" (click)="postPedido()">Registrar</button>
+                </div>
+                <div class="col-6" style="text-align: left;">
+                    <button type="button" class="btn btn-outline-dark" [routerLink]="['/home/gestionar-pedido']">Atrás</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
