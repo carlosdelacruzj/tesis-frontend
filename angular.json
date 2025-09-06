@@ -6,7 +6,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "SWGODLC": {
+    "tesis-frontend": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:application": {
@@ -20,13 +20,17 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/SWGODLC",
+            "outputPath": "dist/tesis-frontend",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "allowedCommonJsDependencies": [
-              "clone-deep"
+              "clone-deep",
+              "rfdc",
+              "pdfmake/build/pdfmake",
+              "pdfmake/build/vfs_fonts",
+              "sweetalert2"
             ],
             "assets": [
               "src/favicon.ico",
@@ -91,10 +95,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "SWGODLC:build:production"
+              "buildTarget": "tesis-frontend:build:production"
             },
             "development": {
-              "buildTarget": "SWGODLC:build:development"
+              "buildTarget": "tesis-frontend:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -102,7 +106,25 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "SWGODLC:build"
+            "buildTarget": "tesis-frontend:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "src/test.ts",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "tsconfig.spec.json",
+            "karmaConfig": "karma.conf.js",
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles": [
+              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "src/styles.css"
+            ],
+            "scripts": []
           }
         }
       }

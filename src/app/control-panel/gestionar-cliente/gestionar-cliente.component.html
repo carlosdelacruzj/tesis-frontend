@@ -1,64 +1,108 @@
 <div class="dashboard-ecommerce">
     <div class="container-fluid dashboard-content">
         <h1 class="mb-4">Clientes</h1>
+
+        <!-- Buscador -->
         <div class="row">
-            <div class="col-6 input-group mb-4 ml-3 p-0 rounded bg-white border border-gray">
-                <input matInput type="search" placeholder="Buscar" class="form-control bg-transparent pl-2 border-0 shadow-none">
-                <button class="bg-transparent border-0 fa fa-search"></button>
+            <div class="col-12 col-md-6 mb-3">
+                <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Buscar</mat-label>
+                    <input matInput type="search" placeholder="Buscar" #q (input)="applyFilter(q.value)" />
+
+                    <button matSuffix mat-icon-button aria-label="Limpiar" (click)="applyFilter('')">
+                        <mat-icon>clear</mat-icon>
+                    </button>
+                </mat-form-field>
+            </div>
+            <div class="col-12 col-md-6 mb-3 text-md-end">
+                <button mat-raised-button color="primary" [routerLink]="['/home/gestionar-cliente/registrar-cliente']">
+                    <mat-icon>person_add</mat-icon>
+                    Registrar Cliente
+                </button>
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-12">
-                <button class="button-margin" mat-raised-button color="primary" [routerLink]="['/home/gestionar-cliente/registrar-cliente']">Registrar Cliente</button>
-            </div>
+        <!-- Estados de carga / error -->
+        <div *ngIf="loading" class="my-3">
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
         </div>
+        <mat-card *ngIf="!loading && errorMsg" class="mb-3" color="warn">
+            <mat-card-content>{{ errorMsg }}</mat-card-content>
+        </mat-card>
+
         <div class="shadow">
             <div class="table-responsive">
-                <table mat-table [dataSource]="dataSource2" matSort class="table">
-                    <ng-container matColumnDef="id">
-                        <div class="text-center">
-                            <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
-                        </div>
-                        <td mat-cell *matCellDef="let element"> {{element.id}} </td>
-                    </ng-container>
+                <table mat-table [dataSource]="dataSource" matSort class="table" stickyHeader>
+
+                    <!-- ID -->
+                    <!-- <ng-container matColumnDef="ID">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-nowrap">ID</th>
+                        <td mat-cell *matCellDef="let element">{{ element.ID }}</td>
+                    </ng-container> -->
+
+                    <!-- Nombre -->
                     <ng-container matColumnDef="nombre">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</th>
-                        <td mat-cell *matCellDef="let element"> {{element.nombre}} </td>
+                        <td mat-cell *matCellDef="let element">{{ element.nombre }}</td>
                     </ng-container>
+
+                    <!-- Apellido -->
                     <ng-container matColumnDef="apellido">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>Apellido</th>
-                        <td mat-cell *matCellDef="let element"> {{element.apellido}} </td>
+                        <td mat-cell *matCellDef="let element">{{ element.apellido }}</td>
                     </ng-container>
+
+                    <!-- Correo -->
                     <ng-container matColumnDef="correo">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>Correo</th>
-                        <td mat-cell *matCellDef="let element">{{element.correo}}</td>
+                        <td mat-cell *matCellDef="let element">
+                            <a [href]="'mailto:' + element.correo">{{ element.correo }}</a>
+                        </td>
                     </ng-container>
+
+                    <!-- Celular -->
                     <ng-container matColumnDef="celular">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header>Celular</th>
-                        <td mat-cell *matCellDef="let element">{{element.celular}}</td>
+                        <td mat-cell *matCellDef="let element">{{ element.celular }}</td>
                     </ng-container>
-                    <ng-container matColumnDef="numDoc">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Número de documento</th>
-                        <td mat-cell *matCellDef="let element">{{element.numDoc}}</td>
+
+                    <!-- Documento (tu modelo expone `doc`) -->
+                    <ng-container matColumnDef="doc">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>N° Documento</th>
+                        <td mat-cell *matCellDef="let element">{{ element.doc }}</td>
                     </ng-container>
+
+                    <!-- Dirección -->
                     <ng-container matColumnDef="direccion">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Direccion</th>
-                        <td mat-cell *matCellDef="let element">{{element.direccion}}</td>
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header>Dirección</th>
+                        <td mat-cell *matCellDef="let element">{{ element.direccion }}</td>
                     </ng-container>
+
+                    <!-- Acciones -->
                     <ng-container matColumnDef="actions">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header> Acciones </th>
+                        <th mat-header-cell *matHeaderCellDef class="text-nowrap">Acciones</th>
                         <td mat-cell *matCellDef="let element">
-                            <button mat-raised-button color="primary" (click)="getByIdCliente(element.id)" [routerLink]="['/home/gestionar-cliente/editar-cliente']">
-                                <span class="fas fa-edit"></span>
+                            <button mat-icon-button matTooltip="Editar cliente" (click)="getByIdCliente(element.ID);"
+                                [routerLink]="['/home/gestionar-cliente/editar-cliente']">
+                                <mat-icon>edit</mat-icon>
                             </button>
                         </td>
                     </ng-container>
 
-                    <tr mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
-                    <tr mat-row *matRowDef="let row; columns: displayedColumns2;"></tr>
+                    <!-- Header / Rows -->
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                    <!-- Estado vacío -->
+                    <tr class="mat-row" *matNoDataRow>
+                        <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+                            No hay clientes que coincidan con el filtro.
+                        </td>
+                    </tr>
                 </table>
-                <mat-paginator #paginator [pageSize]="25" [pageSizeOptions]="[10, 25, 100]">
+
+                <mat-paginator #paginator [pageSize]="25" [pageSizeOptions]="[10, 25, 50, 100]"
+                    [showFirstLastButtons]="true">
                 </mat-paginator>
             </div>
         </div>
