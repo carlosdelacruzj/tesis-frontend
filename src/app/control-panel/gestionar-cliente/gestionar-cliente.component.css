@@ -1,4 +1,4 @@
-.table{
+/* .table{
     width: 100%;
   }
 
@@ -13,4 +13,73 @@ h1{
 .button-margin{
   margin-bottom: 20px;
   float: right;
+} */
+
+/* Centrar encabezados y ajustar filas */
+/* table { width: 100%; }
+
+th.mat-header-cell {
+  text-align: center !important;
+  vertical-align: middle;
 }
+
+td.mat-cell, td.mat-footer-cell {
+  vertical-align: middle;
+}
+
+.text-center { text-align: center; }
+
+.error-card { border-left: 4px solid #e53935; }
+
+.table-responsive { overflow-x: auto; }
+
+.mat-column-actions {
+  width: 90px;
+  text-align: center;
+} */
+
+/* Mantén la tabla estable: no recalcular anchos por contenido */
+table.mat-mdc-table {
+  table-layout: fixed;    /* clave: anchos fijos */
+  width: 100%;
+}
+
+/* Anchos por columna (ajusta a tu gusto, suma ≈100%) */
+.mat-column-nombre     { width: 16%; }
+.mat-column-apellido   { width: 18%; }
+.mat-column-correo     { width: 22%; }
+.mat-column-celular    { width: 10%; }
+.mat-column-doc        { width: 12%; }
+.mat-column-direccion  { width: 18%; }
+.mat-column-actions    { width: 4%; min-width: 64px; text-align: center; }
+
+/* Evita saltos por wraps: corta con ellipsis */
+th.mat-mdc-header-cell,
+td.mat-mdc-cell,
+td.mat-mdc-footer-cell {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+
+/* Centrar títulos (Material pone un contenedor flex a la izq) */
+:host ::ng-deep th.mat-mdc-header-cell .mat-sort-header-container {
+  justify-content: center !important;
+}
+
+/* (Opcional) reserva espacio para la flecha de orden y evitar micro-jitters al ordenar */
+th.mat-mdc-header-cell .mat-sort-header-container { padding-right: 20px; }
+
+/* Centrar la columna Acciones */
+td.mat-mdc-cell.mat-column-actions { text-align: center; }
+
+/* El contenedor responsive puede provocar cambios por la barra de scroll;
+   con esto reservamos el gutter y no “empuja” nada al aparecer/desaparecer */
+.table-responsive {
+  overflow-x: auto;
+  scrollbar-gutter: stable both-edges;  /* soportado por Chrome */
+}
+
+/* (Si quieres una altura fija por fila) */
+/* .mat-mdc-row, .mat-mdc-header-row { height: 44px; } */

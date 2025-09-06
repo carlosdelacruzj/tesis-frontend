@@ -13,3 +13,18 @@ span.mat-radio-inner-circle {
 span.mat-radio-outer-circle{
     border-color:#304a6e !important;
 }
+
+
+/* Global base */
+/* html, body { height: 100%; }
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  overflow: hidden;
+  background: #f5f6f8;
+  color: #1f2937;
+} */
+
+/* Tus overrides existentes */
+/* span.mat-radio-inner-circle { background-color: #304a6e !important; }
+span.mat-radio-outer-circle { border-color: #304a6e !important; } */

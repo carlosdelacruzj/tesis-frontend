@@ -1,135 +1,201 @@
 <div class="container-fluid dashboard-content">
-    <div class="row">
-        <div class="col-xl-12">
-            <div class="page-header">
-                <h2 class="pageheader-title">Registrar Cliente</h2>
-                <p class="pageheader-text">Completa los datos del cliente y guarda el registro.</p>
-                <div class="page-breadcrumb">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a routerLink="/home" class="breadcrumb-link">Dashboard</a></li>
-                            <li class="breadcrumb-item"><a routerLink="/home/gestionar-cliente"
-                                    class="breadcrumb-link">Clientes</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Registrar</li>
-                        </ol>
-                    </nav>
-                </div>
-            </div>
+  <div class="row">
+    <div class="col-xl-12">
+      <div class="page-header">
+        <h2 class="pageheader-title">Registrar Cliente</h2>
+        <p class="pageheader-text">Completa los datos del cliente y guarda el registro.</p>
+        <div class="page-breadcrumb">
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item">
+                <a routerLink="/home" class="breadcrumb-link">Dashboard</a>
+              </li>
+              <li class="breadcrumb-item">
+                <a routerLink="/home/gestionar-cliente" class="breadcrumb-link">Clientes</a>
+              </li>
+              <li class="breadcrumb-item active" aria-current="page">Registrar</li>
+            </ol>
+          </nav>
         </div>
+      </div>
     </div>
+  </div>
 
-    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
-        <mat-card class="card">
-            <mat-card-header class="card-header">
-                <mat-card-title>Datos del cliente</mat-card-title>
-            </mat-card-header>
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+    <mat-card class="card">
+      <mat-card-header class="card-header">
+        <mat-card-title>Datos del cliente</mat-card-title>
+      </mat-card-header>
 
-            <mat-card-content class="card-body">
-                <div class="form-row">
-                    <!-- Nombre -->
-                    <mat-form-field class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-2" appearance="fill">
-                        <mat-label>Nombre</mat-label>
-                        <input matInput formControlName="nombre" type="text" autocomplete="given-name" maxlength="30"
-                            aria-describedby="err-nombre" />
-                        <mat-hint align="end">{{ form.get('nombre')?.value?.length || 0 }}/30</mat-hint>
-                        <mat-error id="err-nombre" *ngIf="form.get('nombre')?.hasError('required')">
-                            *Campo requerido
-                        </mat-error>
-                        <mat-error *ngIf="form.get('nombre')?.hasError('pattern')">
-                            *Sólo letras y espacios (2–30)
-                        </mat-error>
-                    </mat-form-field>
-
-                    <!-- Apellido -->
-                    <mat-form-field class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-2" appearance="fill">
-                        <mat-label>Apellido</mat-label>
-                        <input matInput formControlName="apellido" type="text" autocomplete="family-name" maxlength="40"
-                            aria-describedby="err-apellido" />
-                        <mat-hint align="end">{{ form.get('apellido')?.value?.length || 0 }}/40</mat-hint>
-                        <mat-error id="err-apellido" *ngIf="form.get('apellido')?.hasError('required')">
-                            *Campo requerido
-                        </mat-error>
-                        <mat-error *ngIf="form.get('apellido')?.hasError('pattern')">
-                            *Sólo letras y espacios (2–40)
-                        </mat-error>
-                    </mat-form-field>
-
-                    <!-- Correo -->
-                    <mat-form-field class="col-xl-4 col-lg-4 col-md-12 col-sm-12 mb-2" appearance="fill">
-                        <mat-label>Correo</mat-label>
-                        <input matInput formControlName="correo" type="email" autocomplete="email" inputmode="email"
-                            maxlength="80" aria-describedby="err-correo" />
-                        <mat-hint align="end">{{ form.get('correo')?.value?.length || 0 }}/80</mat-hint>
-                        <mat-error id="err-correo" *ngIf="form.get('correo')?.hasError('required')">
-                            *Campo requerido
-                        </mat-error>
-                        <mat-error
-                            *ngIf="form.get('correo')?.hasError('email') || form.get('correo')?.hasError('spaces')">
-                            *Ingrese un email válido (sin espacios)
-                        </mat-error>
-                    </mat-form-field>
-
-                    <!-- Documento (DNI: 8 dígitos) -->
-                    <mat-form-field class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-2" appearance="fill">
-                        <mat-label>Número de documento</mat-label>
-                        <input matInput formControlName="doc" type="text" inputmode="numeric" autocomplete="off"
-                            maxlength="8" aria-describedby="err-doc" />
-                        <mat-hint align="end">{{ form.get('doc')?.value?.length || 0 }}/8</mat-hint>
-                        <mat-error id="err-doc" *ngIf="form.get('doc')?.hasError('required')">
-                            *Campo requerido
-                        </mat-error>
-                        <mat-error *ngIf="form.get('doc')?.hasError('pattern')">
-                            *DNI: 8 dígitos numéricos
-                        </mat-error>
-                    </mat-form-field>
-
-                    <!-- Celular -->
-                    <mat-form-field class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-2" appearance="fill">
-                        <mat-label>Celular</mat-label>
-                        <input matInput formControlName="celular" type="text" inputmode="numeric" autocomplete="tel"
-                            maxlength="9" aria-describedby="err-celular" />
-                        <mat-hint align="end">{{ form.get('celular')?.value?.length || 0 }}/9</mat-hint>
-                        <mat-error id="err-celular" *ngIf="form.get('celular')?.hasError('required')">
-                            *Campo requerido
-                        </mat-error>
-                        <mat-error *ngIf="form.get('celular')?.hasError('pattern')">
-                            *Sólo números (7–9 dígitos)
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-
-                <div class="form-row">
-                    <!-- Dirección -->
-                    <mat-form-field class="col-12 mb-2" appearance="fill">
-                        <mat-label>Dirección</mat-label>
-                        <textarea matInput formControlName="direccion" rows="2" maxlength="120"
-                            aria-describedby="err-direccion"></textarea>
-                        <mat-hint align="end">{{ form.get('direccion')?.value?.length || 0 }}/120</mat-hint>
-                        <mat-error id="err-direccion" *ngIf="form.get('direccion')?.hasError('maxlength')">
-                            *Máximo 120 caracteres
-                        </mat-error>
-                    </mat-form-field>
-                </div>
-
-                <!-- Loader -->
-                <div *ngIf="loading" class="my-2">
-                    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-                </div>
-                <!-- Error general (si lo usas) -->
-                <mat-card *ngIf="!loading && errorMsg" class="mb-2" color="warn">
-                    <mat-card-content>{{ errorMsg }}</mat-card-content>
-                </mat-card>
-            </mat-card-content>
-        </mat-card>
-
-        <div class="mt-3">
-            <button class="btn btn-primary mb-2 mr-1" type="submit" [disabled]="loading || form.invalid">
-                Registrar
-            </button>
-            <button class="btn btn-secondary mb-2" type="button" [routerLink]="['/home/gestionar-cliente']"
-                [disabled]="loading">
-                Atrás
-            </button>
+      <mat-card-content class="card-body">
+        <!-- Resumen de errores global -->
+        <div *ngIf="submitted && form.invalid"
+             class="alert alert-warning mb-3"
+             role="alert"
+             aria-live="polite">
+          Revisa los campos marcados en rojo.
         </div>
-    </form>
+
+        <div class="form-row">
+          <!-- Nombre -->
+          <mat-form-field class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-2" appearance="fill">
+            <mat-label>Nombre</mat-label>
+            <input matInput
+                   formControlName="nombre"
+                   type="text"
+                   autocomplete="given-name"
+                   maxlength="30"
+                   aria-describedby="err-nombre" />
+            <mat-hint align="end">{{ form.get('nombre')?.value?.length || 0 }}/30</mat-hint>
+
+            <mat-error id="err-nombre"
+                       *ngIf="(form.get('nombre')?.touched || submitted) && form.get('nombre')?.hasError('required')">
+              *Campo requerido
+            </mat-error>
+            <mat-error
+              *ngIf="(form.get('nombre')?.touched || submitted) && form.get('nombre')?.hasError('pattern')">
+              *Sólo letras y espacios (2–30)
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Apellido -->
+          <mat-form-field class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-2" appearance="fill">
+            <mat-label>Apellido</mat-label>
+            <input matInput
+                   formControlName="apellido"
+                   type="text"
+                   autocomplete="family-name"
+                   maxlength="40"
+                   aria-describedby="err-apellido" />
+            <mat-hint align="end">{{ form.get('apellido')?.value?.length || 0 }}/40</mat-hint>
+
+            <mat-error id="err-apellido"
+                       *ngIf="(form.get('apellido')?.touched || submitted) && form.get('apellido')?.hasError('required')">
+              *Campo requerido
+            </mat-error>
+            <mat-error
+              *ngIf="(form.get('apellido')?.touched || submitted) && form.get('apellido')?.hasError('pattern')">
+              *Sólo letras y espacios (2–40)
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Correo -->
+          <mat-form-field class="col-xl-4 col-lg-4 col-md-12 col-sm-12 mb-2" appearance="fill">
+            <mat-label>Correo</mat-label>
+            <input matInput
+                   formControlName="correo"
+                   type="email"
+                   inputmode="email"
+                   autocomplete="email"
+                   maxlength="80"
+                   spellcheck="false"
+                   aria-describedby="err-correo" />
+            <mat-hint align="end">{{ form.get('correo')?.value?.length || 0 }}/80</mat-hint>
+
+            <mat-error id="err-correo"
+                       *ngIf="(form.get('correo')?.touched || submitted) && form.get('correo')?.hasError('required')">
+              *Campo requerido
+            </mat-error>
+            <mat-error
+              *ngIf="(form.get('correo')?.touched || submitted) && (form.get('correo')?.hasError('email') || form.get('correo')?.hasError('spaces'))">
+              *Ingrese un email válido (sin espacios)
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Documento (DNI: 8 dígitos) -->
+          <mat-form-field class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-2" appearance="fill">
+            <mat-label>Número de documento</mat-label>
+            <input matInput
+                   formControlName="doc"
+                   type="text"
+                   inputmode="numeric"
+                   autocomplete="off"
+                   maxlength="8"
+                   soloDigitos
+                   aria-describedby="err-doc" />
+            <mat-hint align="end">{{ form.get('doc')?.value?.length || 0 }}/8</mat-hint>
+
+            <mat-error id="err-doc"
+                       *ngIf="(form.get('doc')?.touched || submitted) && form.get('doc')?.hasError('required')">
+              *Campo requerido
+            </mat-error>
+            <mat-error
+              *ngIf="(form.get('doc')?.touched || submitted) && form.get('doc')?.hasError('pattern')">
+              *DNI: 8 dígitos numéricos
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Celular (Perú: 9 dígitos empezando con 9) -->
+          <mat-form-field class="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-2" appearance="fill">
+            <mat-label>Celular</mat-label>
+            <input matInput
+                   formControlName="celular"
+                   type="text"
+                   inputmode="numeric"
+                   autocomplete="tel"
+                   maxlength="9"
+                   soloDigitos
+                   aria-describedby="err-celular" />
+            <mat-hint align="end">{{ form.get('celular')?.value?.length || 0 }}/9</mat-hint>
+
+            <mat-error id="err-celular"
+                       *ngIf="(form.get('celular')?.touched || submitted) && form.get('celular')?.hasError('required')">
+              *Campo requerido
+            </mat-error>
+            <mat-error
+              *ngIf="(form.get('celular')?.touched || submitted) && form.get('celular')?.hasError('pattern')">
+              *Celular: 9 dígitos y empieza con 9
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <!-- Dirección -->
+          <mat-form-field class="col-12 mb-2" appearance="fill">
+            <mat-label>Dirección</mat-label>
+            <textarea matInput
+                      formControlName="direccion"
+                      rows="2"
+                      maxlength="120"
+                      aria-describedby="err-direccion"></textarea>
+            <mat-hint align="end">{{ form.get('direccion')?.value?.length || 0 }}/120</mat-hint>
+            <mat-error id="err-direccion"
+                       *ngIf="(form.get('direccion')?.touched || submitted) && form.get('direccion')?.hasError('maxlength')">
+              *Máximo 120 caracteres
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!-- Loader -->
+        <div *ngIf="loading" class="my-2">
+          <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        </div>
+
+        <!-- Error general -->
+        <mat-card *ngIf="!loading && errorMsg" class="mb-2" color="warn" aria-live="polite">
+          <mat-card-content>{{ errorMsg }}</mat-card-content>
+        </mat-card>
+      </mat-card-content>
+    </mat-card>
+
+    <div class="mt-3">
+      <!-- Sugerencia: usa Material para consistencia visual -->
+      <button mat-raised-button
+              color="primary"
+              type="submit"
+              class="mb-2 mr-2"
+              [disabled]="loading || form.pending || form.invalid">
+        Registrar
+      </button>
+
+      <button mat-stroked-button
+              color="primary"
+              type="button"
+              class="mb-2"
+              [routerLink]="['/home/gestionar-cliente']"
+              [disabled]="loading">
+        Atrás
+      </button>
+    </div>
+  </form>
 </div>

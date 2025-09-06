@@ -1,4 +1,4 @@
-<div class="dashboard-main-wrapper">
+<!-- <div class="dashboard-main-wrapper">
     <app-header></app-header>
     <app-sidebar></app-sidebar>
     <div class="dashboard-wrapper">
@@ -6,4 +6,18 @@
         <app-footer></app-footer>
     </div>
 
+</div> -->
+<div class="dashboard-main-wrapper">
+  <app-header></app-header>
+  <app-sidebar></app-sidebar>
+
+  <div class="dashboard-wrapper">
+    <!-- ✅ ÚNICO scroll vertical de la app -->
+    <div class="content-scroll">
+      <router-outlet></router-outlet>
+    </div>
+
+    <!-- ✅ Footer siempre abajo (fuera del scroll de la página, pero dentro del wrapper) -->
+    <app-footer></app-footer>
+  </div>
 </div>

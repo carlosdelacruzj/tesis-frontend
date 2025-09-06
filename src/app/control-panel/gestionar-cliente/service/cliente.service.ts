@@ -1,74 +1,131 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map, shareReplay, tap, throwError } from 'rxjs';
-import { environment } from '../../../../environments/environment';
 import { Cliente } from '../model/cliente.model';
 
-// DTOs: lo mínimo necesario para crear/actualizar
+// ====== Page<T> según Spring Data (simplificado) ======
+export interface Page<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  size: number;    // tamaño de página
+  number: number;  // índice de página (0-based)
+}
+
+// ====== DTOs (ajusta a tu modelo si hace falta) ======
 export type CreateClienteDto = Omit<Cliente, 'ID'> & Partial<Pick<Cliente, 'ID'>>;
 export type UpdateClienteDto = Partial<Cliente> & { ID: string };
 
-// Si tu API a veces devuelve array y a veces objeto:
+// Para compat con código existente que esperaba array u objeto
 type ClienteArrOrObj = Cliente[] | Cliente;
 
 @Injectable({ providedIn: 'root' })
 export class ClienteService {
   private readonly http = inject(HttpClient);
-  private readonly API = environment.baseUrl;
 
+  // Rutas REST modernas (el interceptor añade /api/v1)
   private readonly endpoints = {
-    list: `${this.API}/cliente/consulta/getAllCliente`,
-    byId: (id: string) => `${this.API}/cliente/consulta/getByIdCliente/${id}`,
-    create: `${this.API}/cliente/registro/postCliente`,
-    update: `${this.API}/cliente/actualiza/putClienteById`,
+    list: `/clientes`,                      // GET
+    byId: (id: string) => `/clientes/${id}`, // GET
+    create: `/clientes`,                   // POST
+    update: (id: string) => `/clientes/${id}`, // PUT
+    delete: (id: string) => `/clientes/${id}`, // DELETE
   } as const;
 
-  // Cache de lista (invalida en create/update)
-  private clientesCache$?: Observable<Cliente[]>;
+  // ====== Cache (por combinación de parámetros) ======
+  private clientesPageCache$?: Observable<Page<Cliente>>;
+  private cacheKey?: string;
 
-  /** Lista con cache; usa `forceRefresh: true` si quieres reconsultar. */
-  getAllClientes(opts?: { forceRefresh?: boolean; q?: string }): Observable<Cliente[]> {
-    if (!opts?.forceRefresh && this.clientesCache$) return this.clientesCache$;
+  /**
+   * Lista paginada tal cual la devuelve Spring (Page<Cliente>).
+   * Úsalo si manejas paginación en el componente.
+   */
+  listPage(opts?: { q?: string; page?: number; size?: number; sort?: string }): Observable<Page<Cliente>> {
+    const _opts = {
+      q: opts?.q ?? '',
+      page: opts?.page ?? 0,
+      size: opts?.size ?? 25,
+      sort: opts?.sort ?? 'creadoEn,desc',
+    };
 
-    let params = new HttpParams();
-    if (opts?.q) params = params.set('q', opts.q); // sólo si tu backend acepta filtro
+    const key = JSON.stringify(_opts);
+    if (this.clientesPageCache$ && this.cacheKey === key) return this.clientesPageCache$;
 
-    this.clientesCache$ = this.http
-      .get<Cliente[]>(this.endpoints.list, { params })
+    let params = new HttpParams()
+      .set('page', _opts.page)
+      .set('size', _opts.size)
+      .set('sort', _opts.sort);
+
+    if (_opts.q) params = params.set('q', _opts.q);
+
+    this.clientesPageCache$ = this.http
+      .get<Page<Cliente>>(this.endpoints.list, { params })
       .pipe(shareReplay({ bufferSize: 1, refCount: false }));
 
-    return this.clientesCache$;
+    this.cacheKey = key;
+    return this.clientesPageCache$;
   }
 
-  /** Crea y **rompe cache** de la lista. */
+  /**
+   * Conveniencia: sólo el arreglo (content) de la primera página.
+   * Útil si todavía no manejas paginación en UI.
+   */
+  listSimple(opts?: { q?: string; size?: number; sort?: string }): Observable<Cliente[]> {
+    return this.listPage({ q: opts?.q, page: 0, size: opts?.size ?? 100, sort: opts?.sort })
+      .pipe(map(p => p.content));
+  }
+
+  // ==== Compat con tu firma previa getAllClientes(...) (devuelve array) ====
+  getAllClientes(opts?: { forceRefresh?: boolean; q?: string }): Observable<Cliente[]> {
+    // si piden refresco, invalida cache
+    if (opts?.forceRefresh) this.invalidateCache();
+    return this.listSimple({ q: opts?.q });
+  }
+
+  /** Crear (REST) y romper cache */
   addCliente(data: CreateClienteDto): Observable<Cliente> {
-    return this.http.post<Cliente>(this.endpoints.create, data).pipe(
-      tap(() => this.invalidateCache())
-    );
+    return this.http.post<Cliente>(this.endpoints.create, data)
+      .pipe(tap(() => this.invalidateCache()));
   }
 
-  /** Update y **rompe cache** de la lista. */
-  putClienteById(data: UpdateClienteDto): Observable<Cliente> {
-    return this.http.put<Cliente>(this.endpoints.update, data).pipe(
-      tap(() => this.invalidateCache())
-    );
+  /**
+   * Update (REST) por ID en la URL y body con campos a actualizar.
+   * Nota: antes tu legacy metía el ID en el body; ahora es URL.
+   */
+  updateCliente(id: string, data: UpdateClienteDto): Observable<Cliente> {
+    return this.http.put<Cliente>(this.endpoints.update(id), data)
+      .pipe(tap(() => this.invalidateCache()));
   }
 
-  /** Devuelve `Cliente | null` si no existe. */
+  /** Eliminar por ID (nuevo en REST) */
+  deleteCliente(id: string): Observable<void> {
+    return this.http.delete<void>(this.endpoints.delete(id))
+      .pipe(tap(() => this.invalidateCache()));
+  }
+
+  /** Obtener por ID (objeto directo) */
   getByIdCliente(id: string): Observable<Cliente | null> {
-    return this.http.get<ClienteArrOrObj>(this.endpoints.byId(id)).pipe(
-      map((res) => Array.isArray(res) ? (res[0] ?? null) : (res ?? null))
-    );
+    return this.http.get<Cliente>(this.endpoints.byId(id))
+      .pipe(map(res => res ?? null));
   }
 
-  /** Variante estricta: emite error si no existe. */
+  /** Variante estricta: lanza error si no existe */
   getByIdClienteStrict(id: string): Observable<Cliente> {
     return this.getByIdCliente(id).pipe(
       map((c) => c ?? throwError(() => new Error(`Cliente ${id} no encontrado`)) as never)
     );
   }
 
+  /** ===== Utilidades ===== */
   private invalidateCache(): void {
-    this.clientesCache$ = undefined;
+    this.clientesPageCache$ = undefined;
+    this.cacheKey = undefined;
+  }
+
+  // ==== (Opcional) Compat para no romper llamadas antiguas ====
+  /** Compat: si tu UI aún llama putClienteById(data), delega usando data.ID */
+  putClienteById(data: UpdateClienteDto): Observable<Cliente> {
+    if (!data?.ID) return throwError(() => new Error('Falta ID en UpdateClienteDto'));
+    return this.updateCliente(String(data.ID), data);
   }
 }

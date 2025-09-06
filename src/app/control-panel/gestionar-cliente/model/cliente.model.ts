@@ -1,11 +1,15 @@
+export type EstadoCliente = 'ACTIVO' | 'INACTIVO';
+
 export interface Cliente {
-  ID: string;           // ← antes number
+  ID: string;
   nombre: string;
   apellido: string;
   correo: string;
   celular: string;
-  doc: string;          // el back ya responde "doc" (modo compat)
+  doc: string;
   direccion: string;
-  estado?: string;
-  ECli_Nombre?: string;
+  estado?: EstadoCliente;
+  ECli_Nombre?: string; // compat
+  createdAt?: string;   // opcional, si tu back lo manda
+  updatedAt?: string;   // opcional
 }
