@@ -1,13 +1,11 @@
-export class Cliente {
-    constructor(
-        public ID: number,
-        public nombre: string,
-        public apellido: string,
-        public correo: string,
-        public celular: string,
-        public doc: string,
-        public direccion: string,
-        public estado: string,
-        public ECli_Nombre: string,
-    ) { }
+export interface Cliente {
+  ID: string;           // ← antes number
+  nombre: string;
+  apellido: string;
+  correo: string;
+  celular: string;
+  doc: string;          // el back ya responde "doc" (modo compat)
+  direccion: string;
+  estado?: string;
+  ECli_Nombre?: string;
 }

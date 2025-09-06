@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  baseUrl: 'http://localhost:3000/api' // <-- pon aquí tu API local si tienes
+  baseUrl: 'http://localhost:8080' // <-- pon aquí tu API local si tienes
   //baseUrl: 'https://tp2021database.herokuapp.com'
 };
 
